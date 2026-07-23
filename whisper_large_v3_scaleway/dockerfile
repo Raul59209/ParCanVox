@@ -1,0 +1,13 @@
+# containers/whisper_large_v3_scaleway/Dockerfile
+FROM stt-benchmark-base
+
+# Pure API call — no local model, no GPU needed, same pattern as voxtral_small
+RUN pip install openai python-dotenv pydub
+
+
+COPY containers/whisper_large_v3_scaleway/notebook_whisper_large_v3_scaleway.py /app/
+COPY containers/whisper_large_v3_scaleway/notebook_whisper_large_v3_scaleway_chunked.py /app/
+
+# Default: whole-audio. Override with:
+#   docker compose run --rm whisper_large_v3_scaleway python notebook_whisper_large_v3_scaleway_chunked.py
+CMD ["python", "notebook_whisper_large_v3_scaleway.py"]

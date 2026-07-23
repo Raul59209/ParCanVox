@@ -1,0 +1,18 @@
+# containers/voxtral_realtime/Dockerfile
+FROM stt-benchmark-base
+
+# ffmpeg needed to convert m4a→wav since mistral-common's Audio.from_file
+# can't decode AAC/m4a directly (same issue hit with Parakeet and torchaudio)
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
+RUN pip install \
+    "transformers>=5.2.0" \
+    "mistral-common>=1.9.0" \
+    accelerate \
+    soundfile \
+    openai
+
+COPY containers/voxtral_realtime_4b/notebook_voxtral_realtime_4b_trfs.py /app/
+COPY containers/voxtral_realtime_4b/model_loader.py /app/
+
+CMD ["python", "notebook_voxtral_realtime_4b_trfs.py"]

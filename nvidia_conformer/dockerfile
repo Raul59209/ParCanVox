@@ -1,0 +1,13 @@
+# containers/nvidia_conformer/Dockerfile
+FROM stt-benchmark-base
+
+# NeMo has the heaviest install — isolated here so it never
+# pollutes the other containers or causes numpy conflicts.
+# Uses NVIDIA's own PyPI index for NeMo-compatible wheels.
+RUN pip install \
+    "nemo_toolkit[asr]" \
+    --extra-index-url https://pypi.nvidia.com
+
+COPY /containers/nvidia_conformer/notebook_nvidia_conformer.py /app/
+
+CMD ["python", "notebook_nvidia_conformer.py"]

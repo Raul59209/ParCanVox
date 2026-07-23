@@ -1,36 +1,31 @@
 # containers/parakeet_tdt_v3/Dockerfile
 FROM stt-benchmark-base
 
-RUN pip install "numpy<2.0" --force-reinstall
+# The core problem this Dockerfile solves:
+# NeMo's dependency resolver (via pytorch-lightning) will upgrade torch
+# from 2.7.0+cu128 to the latest (2.12.1+cu130 at time of writing).
+# That breaks torchaudio since there's no cu130 build for it.
+# Fix: install NeMo with torch pinned to stay at the base image version,
+# in a single RUN so the constraint is always enforced.
 
-RUN pip install "pytorch-lightning==2.4.0" "lightning==2.4.0"
+# Remove broken training-only libs before anything else
+RUN pip uninstall -y apex triton 2>/dev/null || true
 
-RUN pip install "torchmetrics<1.4.0" --force-reinstall
-
-RUN pip uninstall -y apex triton || true
-
-# Lock torch/torchaudio/torchvision at base image versions before NeMo install
-RUN pip install "torch==2.7.0" --force-reinstall && \
-    pip install "torchaudio==2.7.0" --force-reinstall && \
-    pip install "torchvision==0.22.0" --force-reinstall
-
-# Install NeMo without letting it touch torch
-RUN pip install --default-timeout=300 --retries 5 --no-deps \
+# Install NeMo while pinning torch to the base image version.
+# "torch==2.7.0" acts as an upper bound — pip will not upgrade it.
+# --extra-index-url https://pypi.nvidia.com is needed for some NeMo sub-deps.
+RUN pip install --default-timeout=300 --retries 5 \
     "nemo_toolkit[asr]" \
+    "torch==2.7.0" \
+    "pytorch-lightning<2.5.0" \
+    "lightning<2.5.0" \
+    "torchmetrics<1.4.0" \
+    "numpy<2.0" \
+    soundfile scipy pandas \
     --extra-index-url https://pypi.nvidia.com
 
-# Install NeMo's other dependencies manually
-RUN pip install soundfile scipy pandas omegaconf hydra-core \
-    "pytorch-lightning==2.4.0" "lightning==2.4.0" \
-    "torchmetrics<1.4.0" webdataset braceexpand \
-    inflect unidecode text-unidecode
-
-# Re-pin everything — no external index URLs needed, already installed above
-RUN pip install "numpy<2.0" --force-reinstall && \
-    pip install "pytorch-lightning==2.4.0" "lightning==2.4.0" --force-reinstall && \
-    pip install "torchmetrics<1.4.0" --force-reinstall && \
-    pip install "torch==2.7.0" "torchaudio==2.7.0" "torchvision==0.22.0" --force-reinstall && \
-    pip uninstall -y apex triton || true
+# Verify torch hasn't been upgraded before the next layer runs
+RUN python -c "import torch; v=torch.__version__; assert '2.7' in v, f'torch was upgraded to {v}'; print(f'torch version OK: {v}')"
 
 COPY containers/parakeet_tdt_v3/notebook_parakeet_tdt_v3.py /app/
 

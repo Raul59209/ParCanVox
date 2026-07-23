@@ -1,0 +1,29 @@
+# containers/base/Dockerfile
+FROM pytorch/pytorch:2.7.0-cuda12.8-cudnn9-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    TZ=Etc/UTC \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# Include curl, wget, and pkg-config so child images never hit missing tool errors
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg git build-essential curl wget pkg-config \
+    libavformat-dev libavcodec-dev libavutil-dev \
+    libswscale-dev libswresample-dev libavfilter-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install \
+    "jiwer>=3.0.3" \
+    "num2words>=0.5.13" \
+    "pandas>=2.0.0" \
+    "numpy>=1.24.0,<2.0.0" \
+    "soundfile>=0.12.1" \
+    "librosa>=0.10.0" \
+    "tabulate>=0.9.0"
+
+WORKDIR /app
+COPY src/ ./src/
+RUN mkdir -p audio dataset results

@@ -1,0 +1,16 @@
+# containers/voxtral_small/Dockerfile
+FROM stt-benchmark-base
+
+# Voxtral Small is called via the Scaleway API — no local model weights,
+# no GPU needed in this container. openai+dotenv for the API client,
+# pydub+ffmpeg for the chunked notebook's silence-splitting.
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
+RUN pip install openai python-dotenv pydub
+
+COPY containers/voxtral_small/notebook_voxtral_small.py /app/
+COPY containers/voxtral_small/notebook_voxtral_small_chunked.py /app/
+
+# Default: whole-audio. Override with:
+#   docker compose run --rm voxtral_small python notebook_voxtral_small_chunked.py
+CMD ["python", "notebook_voxtral_small.py"]

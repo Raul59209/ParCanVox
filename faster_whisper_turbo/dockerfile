@@ -1,0 +1,14 @@
+# containers/faster_whisper_turbo/Dockerfile
+FROM stt-benchmark-base
+
+# pydub needed for chunked notebook; ffmpeg is the backend for pydub audio loading
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
+
+RUN pip install faster-whisper==1.0.3 pydub
+
+COPY containers/faster_whisper_turbo/notebook_faster_whisper_turbo_int8.py /app/
+COPY containers/faster_whisper_turbo/notebook_faster_whisper_turbo_int8_chunked.py /app/
+
+# Default: whole-audio. Override with:
+#   docker compose run --rm faster_whisper_turbo python notebook_faster_whisper_turbo_int8_chunked.py
+CMD ["python", "notebook_faster_whisper_turbo_int8.py"]

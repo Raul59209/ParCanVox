@@ -69,6 +69,30 @@ model.eval()
 import torch
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model = model.to(device)
+
+# Switch from full (global, quadratic-memory) attention to local attention
+# with a global token. NVIDIA's own spec for this model caps full-attention
+# long-form audio at 24 minutes, but only "on A100 80GB" — on smaller GPUs
+# the real ceiling is far lower, which matches every segment over ~400-450s
+# failing outright in this dataset. Local attention scales close to linearly
+# with audio length instead, raising the practical ceiling to ~3 hours on
+# the same hardware, and needs no manual audio chunking (unlike Canary,
+# whose attention-decoder architecture has no equivalent option).
+model.change_attention_model(
+    self_attention_model="rel_pos_local_attn",
+    att_context_size=[256, 256],
+)
+
+# The attention change alone doesn't cover everything: the convolutional
+# subsampling module at the very front of the encoder operates directly on
+# the raw, un-downsampled audio sequence and can OOM independently of
+# whatever attention mechanism is used, on long enough files. This is
+# NVIDIA's own documented second half of the long-form-audio fix — without
+# it, only the mid-length segments were clearing (self-attention was the
+# bottleneck there); the genuinely longest files were still crashing in the
+# subsampling step itself. 1 = auto-select chunk size.
+model.change_subsampling_conv_chunking_factor(1)
+
 log.info(f"Model loaded ✓ (device={device})")
 
 norm    = MedicalNormalizer()
@@ -161,7 +185,7 @@ for idx, seg in enumerate(segments):
         "model":               MODEL_ID,
         "device":              device,
         "compute_type":        "fp32",
-        "chunking_strategy":   "whole",
+        "chunking_strategy":   "whole_local_attn_256",
         "segment_id":          seg_id,
         "audio_file":          seg["audio_file"],
         "duration_s":          duration_s,

@@ -1,0 +1,37 @@
+# containers/canary_multilingual/Dockerfile
+FROM stt-benchmark-base
+
+RUN pip install "numpy<2.0" --force-reinstall
+
+# Install NeMo — let it pull whatever versions it wants first
+RUN pip install --default-timeout=300 --retries 5 \
+    "nemo_toolkit[asr]" \
+    --extra-index-url https://pypi.nvidia.com && \
+    pip install soundfile scipy pandas
+
+# Re-pin everything NeMo upgraded, in one shot AFTER NeMo is done
+# torch must be 2.7.0 to match torchaudio/torchvision in the base image
+RUN pip install \
+    "torch==2.7.0" \
+    "pytorch-lightning==2.4.0" \
+    "lightning==2.4.0" \
+    "torchmetrics<1.4.0" \
+    "numpy<2.0" \
+    "fsspec==2024.12.0" \
+    --force-reinstall --no-deps
+
+# Reinstall torchaudio to match torch 2.7.0
+RUN pip install "torchaudio==2.7.0" \
+    --index-url https://download.pytorch.org/whl/cu128 \
+    --force-reinstall --timeout=300 --retries 5
+
+# Pin triton LAST — after everything else, so nothing can overwrite it.
+# NeMo pulls triton 3.7.1 which breaks torch._dynamo.utils.
+# triton 3.3.0 is the version that ships with torch 2.7.0.
+RUN pip install "triton==3.3.0" --force-reinstall --timeout=300 --retries 5
+
+RUN pip install "fsspec==2024.12.0" --force-reinstall
+
+COPY containers/canary_multilingual/notebook_canary_1b_multilingual.py /app/
+
+CMD ["python", "notebook_canary_1b_multilingual.py"]

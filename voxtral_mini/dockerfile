@@ -1,0 +1,11 @@
+# containers/voxtral_mini/Dockerfile
+FROM stt-benchmark-base
+
+# Voxtral Mini is called via the Scaleway API — no local model weights,
+# no GPU needed in this container. Just the OpenAI-compatible client + dotenv
+# for reading SCW_API_KEY from .env.
+RUN pip install openai python-dotenv
+
+COPY containers/voxtral_mini/notebook_voxtral_mini.py /app/
+
+CMD ["python", "notebook_voxtral_mini.py"]

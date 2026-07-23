@@ -1,0 +1,13 @@
+# containers/whisper_large/Dockerfile
+FROM stt-benchmark-base
+
+RUN pip install openai-whisper>=20231117
+
+ENV CUDA_VISIBLE_DEVICES=-1
+
+# Model is mounted via docker-compose volume from host machine.
+# Download manually to C:\Users\raul5\.cache\whisper\large-v3.pt
+# The whisper-cache volume in docker-compose.yml maps it to /root/.cache/whisper/
+
+COPY /containers/whisper_large/notebook_whisper_large_v3.py /app/
+CMD ["python", "notebook_whisper_large_v3.py"]

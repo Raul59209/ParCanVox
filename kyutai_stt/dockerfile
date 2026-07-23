@@ -1,0 +1,8 @@
+# containers/kyutai_stt/Dockerfile
+FROM stt-benchmark-base
+
+RUN pip install "transformers>=4.53.0" torchaudio accelerate
+
+COPY containers/kyutai_stt/notebook_kyutai_stt_1b_trfs.py /app/
+
+CMD ["python", "notebook_kyutai_stt_1b_trfs.py"]
