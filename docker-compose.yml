@@ -1,0 +1,170 @@
+x-gpu: &gpu
+  runtime: nvidia
+  environment:
+    - NVIDIA_VISIBLE_DEVICES=all
+    - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+x-volumes: &volumes
+  volumes:
+    - ./audio:/app/audio
+    - ./dataset:/app/dataset
+    - ./results:/app/results
+    - hf-cache:/root/.cache/huggingface
+    # Named volume instead of a hardcoded host path — portable across machines/OSes
+    - whisper-cache:/root/.cache/whisper
+
+services:
+
+  whisperx:
+    <<: [*gpu, *volumes]
+    build:
+      context: .
+      dockerfile: containers/whisperx/Dockerfile
+    image: stt-whisperx
+    container_name: stt-whisperx
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+
+  faster_whisper:
+    <<: [*gpu, *volumes]
+    build:
+      context: .
+      dockerfile: containers/faster_whisper/Dockerfile
+    image: stt-faster-whisper
+    container_name: stt-faster-whisper
+
+  faster_whisper_int8:
+    <<: [*gpu, *volumes]
+    build:
+      context: .
+      dockerfile: containers/faster_whisper_int8/Dockerfile
+    image: stt-faster-whisper-int8
+    container_name: stt-faster-whisper-int8
+
+  faster_whisper_turbo:
+    <<: [*gpu, *volumes]
+    build:
+      context: .
+      dockerfile: containers/faster_whisper_turbo/Dockerfile
+    image: stt-faster-whisper-turbo
+    env_file:
+      - .env
+    container_name: stt-faster-whisper-turbo
+
+  voxtral_small:
+    <<: *volumes
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: containers/voxtral_small/Dockerfile
+    image: stt-voxtral-small
+    container_name: stt-voxtral-small
+
+  kyutai_stt:
+    <<: [*gpu, *volumes]
+    build:
+      context: .
+      dockerfile: containers/kyutai_stt/Dockerfile
+    image: stt-kyutai
+    container_name: stt-kyutai
+
+  parakeet_tdt_v3:
+    build:
+      context: .
+      dockerfile: containers/parakeet_tdt_v3/Dockerfile
+    image: stt-parakeet-tdt-v3
+    container_name: napoleon-parakeet-tdt-v3
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - HF_TOKEN=${HF_TOKEN:-}
+    volumes:
+      - ./audio:/app/audio
+      - ./dataset:/app/dataset
+      - ./results:/app/results
+      - hf-cache:/root/.cache/huggingface
+
+  canary_multilingual:
+    <<: *gpu
+    volumes:
+      - ./audio:/app/audio
+      - ./dataset:/app/dataset
+      - ./results:/app/results
+      - hf-cache:/root/.cache/huggingface
+      - whisper-cache:/root/.cache/whisper
+      - ./containers/canary_multilingual/notebook_canary_1b_multilingual.py:/app/notebook_canary_1b_multilingual.py
+    build:
+      context: .
+      dockerfile: containers/canary_multilingual/Dockerfile
+    image: stt-canary-multilingual
+    container_name: stt-canary-multilingual
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+
+  voxtral_realtime_4b:
+    <<: *volumes
+    depends_on:
+      - voxtral_vllm
+    build:
+      context: .
+      dockerfile: containers/voxtral_realtime_4b/Dockerfile
+    image: stt-voxtral-realtime-4b
+    container_name: stt-voxtral-realtime-4b
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - VLLM_BASE_URL=${VLLM_BASE_URL:-http://voxtral_vllm:8000/v1}
+      - VLLM_API_KEY=${VLLM_API_KEY:-dummy}
+      - HF_TOKEN=${HF_TOKEN:-}
+      - VOXTRAL_MODEL_DIR=${VOXTRAL_MODEL_DIR:-}
+      - VOXTRAL_USE_TRANSFORMERS=${VOXTRAL_USE_TRANSFORMERS:-true}
+    volumes:
+      - ./audio:/app/audio
+      - ./dataset:/app/dataset
+      - ./results:/app/results
+      - hf-cache:/root/.cache/huggingface
+      - ${VOXTRAL_MODEL_DIR_HOST:-/tmp/empty}:/models:ro
+      - ./containers/voxtral_realtime_4b/notebook_voxtral_realtime_4b.py:/app/notebook_voxtral_realtime_4b.py
+
+  voxtral_vllm:
+    image: vllm/vllm-openai:latest
+    container_name: voxtral-vllm
+    ports:
+      - "8000:8000"
+    environment:
+      - VLLM_TARGET_DEVICE=cpu
+      - VLLM_CPU_KVCACHE_SPACE=4
+      - VLLM_LOGGING_LEVEL=DEBUG
+      - CUDA_VISIBLE_DEVICES=""
+      - HF_TOKEN=${HF_TOKEN:-}
+      - HF_HOME=/root/.cache/huggingface
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface/transformers
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+      - ${VOXTRAL_MODEL_DIR_HOST:-/tmp/empty}:/models:ro
+    command: >
+      python -m vllm.entrypoints.openai.api_server
+      --model ${VOXTRAL_VLLM_MODEL_PATH:-mistralai/Voxtral-Mini-4B-Realtime-2602}
+      --tokenizer-mode mistral
+      --device cpu
+      --dtype bfloat16
+      --max-model-len 4096
+      --max-num-seqs 1
+
+  whisper_large_v3_scaleway:
+    <<: *volumes
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: containers/whisper_large_v3_scaleway/Dockerfile
+    image: stt-whisper-large-v3-scaleway
+    container_name: stt-whisper-large-v3-scaleway
+
+volumes:
+  hf-cache:
+  whisper-cache:
