@@ -14,6 +14,11 @@ x-volumes: &volumes
     - whisper-cache:/root/.cache/whisper
 
 services:
+  stt-benchmark-base:
+    build:
+      context: ./containers/base
+      dockerfile: Dockerfile
+    image: stt-benchmark-base
 
   whisperx:
     <<: [*gpu, *volumes]
