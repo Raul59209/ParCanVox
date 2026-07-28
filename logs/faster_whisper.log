@@ -1,0 +1,148 @@
+ Network parcanvox_default Creating 
+ Network parcanvox_default Created 
+ Volume parcanvox_hf-cache Creating 
+ Volume parcanvox_hf-cache Created 
+ Volume parcanvox_whisper-cache Creating 
+ Volume parcanvox_whisper-cache Created 
+ Container parcanvox-faster_whisper-run-ca0e9b4962b3 Creating 
+ Container parcanvox-faster_whisper-run-ca0e9b4962b3 Created 
+2026-07-28 03:33:01,524 [INFO] Dataset fingerprint: a3e83cf2aa8a84b85142
+2026-07-28 03:33:01,524 [INFO] Segments: 17 | Total audio: 5634.2s
+2026-07-28 03:33:01,524 [INFO] Loading faster-whisper large-v3 on cuda (float16)...
+2026-07-28 03:33:03,055 [INFO] HTTP Request: GET https://huggingface.co/api/agent-harnesses "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,156 [INFO] HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-large-v3/revision/main "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,259 [INFO] HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-large-v3/tree/edaa852ec7e145841d8ffdb056a99866b5f0a478?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,357 [INFO] HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-large-v3/resolve/edaa852ec7e145841d8ffdb056a99866b5f0a478/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-28 03:33:03,361 [INFO] HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/config.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,366 [INFO] HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/config.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,410 [INFO] HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-large-v3/resolve/edaa852ec7e145841d8ffdb056a99866b5f0a478/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-28 03:33:03,411 [WARNING] Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-07-28 03:33:03,415 [INFO] HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,417 [INFO] HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-large-v3/resolve/edaa852ec7e145841d8ffdb056a99866b5f0a478/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-28 03:33:03,417 [INFO] HTTP Request: HEAD https://huggingface.co/Systran/faster-whisper-large-v3/resolve/edaa852ec7e145841d8ffdb056a99866b5f0a478/vocabulary.json "HTTP/1.1 307 Temporary Redirect"
+2026-07-28 03:33:03,420 [INFO] HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,421 [INFO] HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/tokenizer.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,422 [INFO] HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/vocabulary.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,427 [INFO] HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/tokenizer.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:03,427 [INFO] HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Systran/faster-whisper-large-v3/edaa852ec7e145841d8ffdb056a99866b5f0a478/vocabulary.json "HTTP/1.1 200 OK"
+2026-07-28 03:33:13,561 [INFO] Model loaded ✓
+2026-07-28 03:33:13,562 [INFO] [1/17] seg_0001 — Consultation 1.m4a
+2026-07-28 03:33:13,676 [INFO] Processing audio with duration 01:45.748
+2026-07-28 03:33:14,190 [INFO] VAD filter removed 00:00.000 of audio
+2026-07-28 03:33:19,920 [INFO]   WER=0.043 | CER=0.038 | RTF=0.060 | latency=6.4s
+2026-07-28 03:33:19,920 [INFO]   REF: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 03:33:19,920 [INFO]   HYP: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 03:33:19,921 [INFO] [2/17] seg_0002 — Recording_1001.m4a
+2026-07-28 03:33:20,279 [INFO] Processing audio with duration 08:45.632
+2026-07-28 03:33:22,648 [INFO] VAD filter removed 00:11.824 of audio
+2026-07-28 03:33:48,350 [INFO]   WER=0.065 | CER=0.046 | RTF=0.054 | latency=28.4s
+2026-07-28 03:33:48,351 [INFO]   REF: bonjour monsieur dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon adresse habitude p
+2026-07-28 03:33:48,351 [INFO]   HYP: bonjour m dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon adresse habitude parfait 
+2026-07-28 03:33:48,351 [INFO] [3/17] seg_0003 — Recording_1006.m4a
+2026-07-28 03:33:48,728 [INFO] Processing audio with duration 09:10.847
+2026-07-28 03:33:51,257 [INFO] VAD filter removed 00:01.968 of audio
+2026-07-28 03:34:19,707 [INFO]   WER=0.082 | CER=0.049 | RTF=0.057 | latency=31.3s
+2026-07-28 03:34:19,707 [INFO]   REF: bonjour m laurent alors vous venez me voir sur les conseils de votre médecin généraliste est ça oui 
+2026-07-28 03:34:19,707 [INFO]   HYP: bonjour monsieur laurent alors vous venez me voir sur les conseils de votre médecin généraliste est 
+2026-07-28 03:34:19,707 [INFO] [4/17] seg_0004 — Recording_1007.m4a
+2026-07-28 03:34:20,037 [INFO] Processing audio with duration 08:26.031
+2026-07-28 03:34:22,202 [INFO] VAD filter removed 01:06.224 of audio
+2026-07-28 03:34:52,367 [INFO]   WER=0.140 | CER=0.122 | RTF=0.064 | latency=32.6s
+2026-07-28 03:34:52,367 [INFO]   REF: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 03:34:52,367 [INFO]   HYP: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 03:34:52,367 [INFO] [5/17] seg_0005 — Recording_3006.m4a
+2026-07-28 03:34:52,738 [INFO] Processing audio with duration 08:55.316
+2026-07-28 03:34:55,069 [INFO] VAD filter removed 00:11.728 of audio
+2026-07-28 03:35:23,459 [INFO]   WER=0.097 | CER=0.079 | RTF=0.058 | latency=31.1s
+2026-07-28 03:35:23,459 [INFO]   REF: madame ben saïd oui bonjour bonjour madame allez-y je vous en prie installez-vous très bien merci al
+2026-07-28 03:35:23,459 [INFO]   HYP: madame ben saïd bonjour madame allez-y je vous en prie installez-vous bonjour docteur très bien merc
+2026-07-28 03:35:23,459 [INFO] [6/17] seg_0006 — perso_9.m4a
+2026-07-28 03:35:23,734 [INFO] Processing audio with duration 03:53.065
+2026-07-28 03:35:24,740 [INFO] VAD filter removed 00:26.281 of audio
+2026-07-28 03:35:34,407 [INFO]   WER=0.313 | CER=0.173 | RTF=0.047 | latency=10.9s
+2026-07-28 03:35:34,407 [INFO]   REF: chers confrères je vous en consultation monsieur pour hypoacousie droite point à la ligne bien pris 
+2026-07-28 03:35:34,407 [INFO]   HYP: chers confrères je vous en consultation monsieur pour hypoacousie droite point à aigle ai bien pris 
+2026-07-28 03:35:34,407 [INFO] [7/17] seg_0007 — audio_orl1.m4a
+2026-07-28 03:35:34,509 [INFO] Processing audio with duration 01:27.316
+2026-07-28 03:35:34,896 [INFO] VAD filter removed 00:00.464 of audio
+2026-07-28 03:35:39,316 [INFO]   WER=0.154 | CER=0.054 | RTF=0.009 | latency=4.9s
+2026-07-28 03:35:39,316 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=4mg hyp=75mg (ratio=18.8x)
+2026-07-28 03:35:39,316 [INFO]   REF: cher confrère ai vu ce jour mlle dupont marie pour 1 problématique de vertiges évoluant depuis envir
+2026-07-28 03:35:39,316 [INFO]   HYP: chers confrères ai vu ce jour madame dupont-marie pour 1 problématique de vertiges évoluant depuis e
+2026-07-28 03:35:39,316 [INFO] [8/17] seg_0008 — audio_orl2.m4a
+2026-07-28 03:35:39,456 [INFO] Processing audio with duration 02:35.497
+2026-07-28 03:35:40,146 [INFO] VAD filter removed 00:02.016 of audio
+2026-07-28 03:35:54,899 [INFO]   WER=0.114 | CER=0.038 | RTF=0.028 | latency=15.6s
+2026-07-28 03:35:54,899 [INFO]   REF: bilan 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédents 1 otospong
+2026-07-28 03:35:54,900 [INFO]   HYP: légion 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédent 1 autospon
+2026-07-28 03:35:54,900 [INFO] [9/17] seg_0009 — perso_4.m4a
+2026-07-28 03:35:55,036 [INFO] Processing audio with duration 01:26.889
+2026-07-28 03:35:55,420 [INFO] VAD filter removed 00:00.000 of audio
+2026-07-28 03:35:58,780 [INFO]   WER=0.263 | CER=0.188 | RTF=0.045 | latency=3.9s
+2026-07-28 03:35:58,780 [INFO]   REF: chers confrère je vois en consultation le jeune à 8 mois de son amygdalectomie partielle adénoïdecto
+2026-07-28 03:35:58,780 [INFO]   HYP: chers confrères je vois en consultation le jeune à 8 mois de son amygdalaectomie partielle adénodect
+2026-07-28 03:35:58,780 [INFO] [10/17] seg_0010 — Recording_1019.m4a
+2026-07-28 03:35:59,157 [INFO] Processing audio with duration 10:03.648
+2026-07-28 03:36:01,871 [INFO] VAD filter removed 03:17.536 of audio
+2026-07-28 03:36:22,838 [INFO]   WER=1.649 | CER=1.397 | RTF=0.040 | latency=24.0s
+2026-07-28 03:36:22,838 [INFO]   REF: bonjour madame dupont vous avez 1 problème de voix je peux plus parler normalement vous parlez très 
+2026-07-28 03:36:22,838 [INFO]   HYP: bonjour madame dupont alors vous avez 1 problème de voix est ça oui entends vous vous parlez très ba
+2026-07-28 03:36:22,838 [INFO] [11/17] seg_0011 — Recording_3005.m4a
+2026-07-28 03:36:23,143 [INFO] Processing audio with duration 07:13.769
+2026-07-28 03:36:25,037 [INFO] VAD filter removed 00:28.272 of audio
+2026-07-28 03:36:43,355 [INFO]   WER=0.096 | CER=0.057 | RTF=0.047 | latency=20.5s
+2026-07-28 03:36:43,355 [INFO]   REF: bonjour madame riboud venez je vous en prie entrez venez vous asseoir merci docteur honnêtement ai p
+2026-07-28 03:36:43,355 [INFO]   HYP: bonjour madame riboud venez je vous en prie entrez venez vous asseoir honnêtement ai peur ai vraimen
+2026-07-28 03:36:43,355 [INFO] [12/17] seg_0012 — perso_6.m4a
+2026-07-28 03:36:43,556 [INFO] Processing audio with duration 02:34.644
+2026-07-28 03:36:44,279 [INFO] VAD filter removed 00:02.704 of audio
+2026-07-28 03:36:51,780 [INFO]   WER=0.420 | CER=0.242 | RTF=0.054 | latency=8.4s
+2026-07-28 03:36:51,780 [INFO]   REF: chers confrère je vois en consultation la jeune pour la laryngite à répétition et troubles respirato
+2026-07-28 03:36:51,780 [INFO]   HYP: chers confrères je vous envoie en consultation la jeûne pour laryngite à répétition et troubles resp
+2026-07-28 03:36:51,780 [INFO] [13/17] seg_0014 — Recording_4001.m4a
+2026-07-28 03:36:51,908 [INFO] Processing audio with duration 02:16.639
+2026-07-28 03:36:52,513 [INFO] VAD filter removed 00:00.432 of audio
+2026-07-28 03:36:58,967 [INFO]   WER=0.160 | CER=0.079 | RTF=0.053 | latency=7.2s
+2026-07-28 03:36:58,967 [INFO]   REF: je vois en consultation mes sujets ai de 64 ans resté par son médecin traitant pour optimisation du 
+2026-07-28 03:36:58,967 [INFO]   HYP: je vois en consultation mes sujets il est de 64 ans adressé par son médecin traitant pour optimisati
+2026-07-28 03:36:58,967 [INFO] [14/17] seg_0015 — Recording_4002.m4a
+2026-07-28 03:36:59,084 [INFO] Processing audio with duration 02:06.617
+2026-07-28 03:36:59,638 [INFO] VAD filter removed 00:01.424 of audio
+2026-07-28 03:37:06,013 [INFO]   WER=0.298 | CER=0.203 | RTF=0.056 | latency=7.0s
+2026-07-28 03:37:06,013 [INFO]   REF: madame durand ai de 52 ans opérée ce jour pour polypose nasocinusine bilatérale récidivante dans le 
+2026-07-28 03:37:06,013 [INFO]   HYP: madame durand âgée de 52 ans opérée ce jour pour polypose nasocinusine bilatérale récidivante dans l
+2026-07-28 03:37:06,013 [INFO] [15/17] seg_0016 — Recording_4003.m4a
+2026-07-28 03:37:06,166 [INFO] Processing audio with duration 03:04.425
+2026-07-28 03:37:06,964 [INFO] VAD filter removed 00:04.592 of audio
+2026-07-28 03:37:15,186 [INFO]   WER=0.133 | CER=0.058 | RTF=0.050 | latency=9.2s
+2026-07-28 03:37:15,186 [WARNING]   ⚠️  DOSAGE_MISSING: ref=68ui not found in hypothesis
+2026-07-28 03:37:15,186 [INFO]   REF: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 03:37:15,186 [INFO]   HYP: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 03:37:15,186 [INFO] [16/17] seg_0017 — Recording_4005.m4a
+2026-07-28 03:37:15,373 [INFO] Processing audio with duration 04:03.476
+2026-07-28 03:37:16,429 [INFO] VAD filter removed 00:05.872 of audio
+2026-07-28 03:37:35,830 [INFO]   WER=0.172 | CER=0.104 | RTF=0.085 | latency=20.6s
+2026-07-28 03:37:35,830 [INFO]   REF: bonjour en consultation madame petitjean ai 38 ans adressé par son médecin traitant pour évaluation 
+2026-07-28 03:37:35,831 [INFO]   HYP: bonjour en consultation madame petitjean ai 38 ans adressé par son médecin traitant pour évaluation 
+2026-07-28 03:37:35,831 [INFO] [17/17] seg_0018 — perso_14.m4a
+2026-07-28 03:37:36,005 [INFO] Processing audio with duration 02:10.495
+2026-07-28 03:37:36,602 [INFO] VAD filter removed 00:12.991 of audio
+2026-07-28 03:37:41,307 [INFO]   WER=0.532 | CER=0.337 | RTF=0.042 | latency=5.5s
+2026-07-28 03:37:41,307 [INFO]   REF: cher confrère je rencontre monsieur pour 1 dysphagie haute ai bien noté son antécédents de cancer co
+2026-07-28 03:37:41,307 [INFO]   HYP: chers confrères je rencontre monsieur pour 1 dysphagie haute point araignée ai bien noté son antécéd
+2026-07-28 03:37:41,313 [INFO] 
+Results saved → results/results_faster_whisper.csv
+
+============================================================
+RESULTS — faster-whisper large-v3 (cuda/float16)
+============================================================
+  Segments:        17
+  Mean WER:        0.278
+  Mean CER:        0.192
+  Med entity acc:  0.915
+  Mean RTF:        0.050  ✓ faster than realtime
+  Mean latency:    15.7s
+  Dataset:         a3e83cf2aa8a84b85142
+  Critical errors: 2
+============================================================

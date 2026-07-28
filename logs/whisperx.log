@@ -1,0 +1,105 @@
+ Network parcanvox_default Creating 
+ Network parcanvox_default Created 
+ Container parcanvox-whisperx-run-7acb39b3715d Creating 
+ Container parcanvox-whisperx-run-7acb39b3715d Created 
+2026-07-28 04:17:02,323 [INFO] Dataset fingerprint: a3e83cf2aa8a84b85142
+2026-07-28 04:17:02,323 [INFO] Segments: 17 | Total audio: 5634.2s
+2026-07-28 04:17:02,323 [INFO] Loading WhisperX large-v3...
+2026-07-28 04:17:06,337 [INFO] generated new fontManager
+2026-07-28 04:17:09 - whisperx.vads.pyannote - INFO - Performing voice activity detection using Pyannote...
+INFO: Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.5. To apply the upgrade to your files permanently, run `python -m lightning.pytorch.utilities.upgrade_checkpoint ../opt/conda/lib/python3.11/site-packages/whisperx/assets/pytorch_model.bin`
+2026-07-28 04:17:10,078 [INFO] Lightning automatically upgraded your loaded checkpoint from v1.5.4 to v2.6.5. To apply the upgrade to your files permanently, run `python -m lightning.pytorch.utilities.upgrade_checkpoint ../opt/conda/lib/python3.11/site-packages/whisperx/assets/pytorch_model.bin`
+2026-07-28 04:17:10,150 [INFO] Loaded on cuda/float16 ✓
+2026-07-28 04:17:10,150 [INFO] [1/17] seg_0001
+/opt/conda/lib/python3.11/site-packages/pyannote/audio/utils/reproducibility.py:74: ReproducibilityWarning: TensorFloat-32 (TF32) has been disabled as it might lead to reproducibility issues and lower accuracy.
+It can be re-enabled by calling
+   >>> import torch
+   >>> torch.backends.cuda.matmul.allow_tf32 = True
+   >>> torch.backends.cudnn.allow_tf32 = True
+See https://github.com/pyannote/pyannote-audio/issues/1370 for more details.
+
+  warnings.warn(
+2026-07-28 04:17:12,316 [INFO]   WER=0.037 | CER=0.015 | RTF=0.020
+2026-07-28 04:17:12,316 [INFO]   REF: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 04:17:12,316 [INFO]   HYP: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 04:17:12,317 [INFO] [2/17] seg_0002
+2026-07-28 04:17:20,602 [INFO]   WER=0.049 | CER=0.033 | RTF=0.016
+2026-07-28 04:17:20,602 [INFO]   REF: bonjour monsieur dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon adresse habitude p
+2026-07-28 04:17:20,602 [INFO]   HYP: bonjour monsieur dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon aidant est habitud
+2026-07-28 04:17:20,602 [INFO] [3/17] seg_0003
+2026-07-28 04:17:29,900 [INFO]   WER=0.087 | CER=0.050 | RTF=0.017
+2026-07-28 04:17:29,900 [INFO]   REF: bonjour m laurent alors vous venez me voir sur les conseils de votre médecin généraliste est ça oui 
+2026-07-28 04:17:29,900 [INFO]   HYP: bonjour m laurent alors vous venez me voir sur les conseils de votre médecin généraliste est ça oui 
+2026-07-28 04:17:29,900 [INFO] [4/17] seg_0004
+2026-07-28 04:17:37,210 [INFO]   WER=0.051 | CER=0.044 | RTF=0.014
+2026-07-28 04:17:37,211 [INFO]   REF: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 04:17:37,211 [INFO]   HYP: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 04:17:37,211 [INFO] [5/17] seg_0005
+2026-07-28 04:17:45,420 [INFO]   WER=0.125 | CER=0.106 | RTF=0.015
+2026-07-28 04:17:45,420 [INFO]   REF: madame ben saïd oui bonjour bonjour madame allez-y je vous en prie installez-vous très bien merci al
+2026-07-28 04:17:45,420 [INFO]   HYP: madame ben saïd oui bonjour bonjour madame allez-y je vous en prie installez-vous très bien merci al
+2026-07-28 04:17:45,420 [INFO] [6/17] seg_0006
+2026-07-28 04:17:48,330 [INFO]   WER=0.232 | CER=0.134 | RTF=0.012
+2026-07-28 04:17:48,330 [INFO]   REF: chers confrères je vous en consultation monsieur pour hypoacousie droite point à la ligne bien pris 
+2026-07-28 04:17:48,330 [INFO]   HYP: chers confrères je vous en consultation monsieur pour hypoacousie droite point à la ligne bien pris 
+2026-07-28 04:17:48,330 [INFO] [7/17] seg_0007
+2026-07-28 04:17:50,140 [INFO]   WER=0.166 | CER=0.056 | RTF=0.003
+2026-07-28 04:17:50,140 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=4mg hyp=75mg (ratio=18.8x)
+2026-07-28 04:17:50,140 [INFO]   REF: cher confrère ai vu ce jour mlle dupont marie pour 1 problématique de vertiges évoluant depuis envir
+2026-07-28 04:17:50,140 [INFO]   HYP: cher confrère ai vu ce jour madame dupont-marie pour 1 problématique de vertige évoluant depuis envi
+2026-07-28 04:17:50,140 [INFO] [8/17] seg_0008
+2026-07-28 04:17:52,893 [INFO]   WER=0.109 | CER=0.038 | RTF=0.005
+2026-07-28 04:17:52,893 [INFO]   REF: bilan 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédents 1 otospong
+2026-07-28 04:17:52,893 [INFO]   HYP: 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédent 1 autospongieuse 
+2026-07-28 04:17:52,893 [INFO] [9/17] seg_0009
+2026-07-28 04:17:54,183 [INFO]   WER=0.206 | CER=0.114 | RTF=0.015
+2026-07-28 04:17:54,183 [INFO]   REF: chers confrère je vois en consultation le jeune à 8 mois de son amygdalectomie partielle adénoïdecto
+2026-07-28 04:17:54,183 [INFO]   HYP: chers confrères je vois en consultation le jeune à 8 mois de son amygdalaectomie partielle adénodect
+2026-07-28 04:17:54,183 [INFO] [10/17] seg_0010
+2026-07-28 04:18:02,348 [INFO]   WER=1.810 | CER=1.591 | RTF=0.013
+2026-07-28 04:18:02,348 [INFO]   REF: bonjour madame dupont vous avez 1 problème de voix je peux plus parler normalement vous parlez très 
+2026-07-28 04:18:02,348 [INFO]   HYP: bonjour madame dupont alors vous avez 1 problème de voix est ça oui bonjour docteur est ça je ne peu
+2026-07-28 04:18:02,348 [INFO] [11/17] seg_0011
+2026-07-28 04:18:08,544 [INFO]   WER=0.071 | CER=0.045 | RTF=0.014
+2026-07-28 04:18:08,545 [INFO]   REF: bonjour madame riboud venez je vous en prie entrez venez vous asseoir merci docteur honnêtement ai p
+2026-07-28 04:18:08,545 [INFO]   HYP: bonjour madame riboud venez je vous en prie entrez venez vous asseoir merci docteur honnêtement ai p
+2026-07-28 04:18:08,545 [INFO] [12/17] seg_0012
+2026-07-28 04:18:11,421 [INFO]   WER=0.325 | CER=0.172 | RTF=0.019
+2026-07-28 04:18:11,421 [INFO]   REF: chers confrère je vois en consultation la jeune pour la laryngite à répétition et troubles respirato
+2026-07-28 04:18:11,421 [INFO]   HYP: chers confrères je vous envoie en consultation la jeune pour laryngite à répétition et troubles resp
+2026-07-28 04:18:11,421 [INFO] [13/17] seg_0014
+2026-07-28 04:18:14,211 [INFO]   WER=0.152 | CER=0.073 | RTF=0.020
+2026-07-28 04:18:14,211 [INFO]   REF: je vois en consultation mes sujets ai de 64 ans resté par son médecin traitant pour optimisation du 
+2026-07-28 04:18:14,211 [INFO]   HYP: je vois en consultation mes sujets ai de 64 ans adressé par son médecin traitant pour optimisation d
+2026-07-28 04:18:14,211 [INFO] [14/17] seg_0015
+2026-07-28 04:18:17,076 [INFO]   WER=0.260 | CER=0.195 | RTF=0.023
+2026-07-28 04:18:17,076 [INFO]   REF: madame durand ai de 52 ans opérée ce jour pour polypose nasocinusine bilatérale récidivante dans le 
+2026-07-28 04:18:17,076 [INFO]   HYP: madame durand ai de 52 ans opérée ce jour pour polypose nasocinusine bilatérale récidivante dans le 
+2026-07-28 04:18:17,076 [INFO] [15/17] seg_0016
+2026-07-28 04:18:20,219 [INFO]   WER=0.124 | CER=0.047 | RTF=0.017
+2026-07-28 04:18:20,219 [WARNING]   ⚠️  DOSAGE_MISSING: ref=68ui not found in hypothesis
+2026-07-28 04:18:20,219 [INFO]   REF: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 04:18:20,219 [INFO]   HYP: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 04:18:20,219 [INFO] [16/17] seg_0017
+2026-07-28 04:18:24,449 [INFO]   WER=0.125 | CER=0.057 | RTF=0.017
+2026-07-28 04:18:24,449 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=5mg hyp=50mg (ratio=10.0x)
+2026-07-28 04:18:24,449 [INFO]   REF: bonjour en consultation madame petitjean ai 38 ans adressé par son médecin traitant pour évaluation 
+2026-07-28 04:18:24,449 [INFO]   HYP: bonjour en consultation madame petitjean ai 38 ans adressé par son médecin traitant pour évaluation 
+2026-07-28 04:18:24,449 [INFO] [17/17] seg_0018
+2026-07-28 04:18:26,378 [INFO]   WER=0.274 | CER=0.193 | RTF=0.015
+2026-07-28 04:18:26,378 [INFO]   REF: cher confrère je rencontre monsieur pour 1 dysphagie haute ai bien noté son antécédents de cancer co
+2026-07-28 04:18:26,378 [INFO]   HYP: cher confrère je rencontre monsieur pour 1 dysphagie haute point alenia ai bien noté son antécédent 
+2026-07-28 04:18:26,385 [INFO] Results saved → results/results_whisperx.csv
+
+============================================================
+RESULTS — whisperx-large-v3 (cuda/float16)
+============================================================
+  Segments:        17
+  Mean WER:        0.247
+  Mean CER:        0.174
+  Med entity acc:  0.861
+  Mean RTF:        0.015
+  Mean latency:    4.5s
+  Critical errors: 3
+  Dataset:         a3e83cf2aa8a84b85142
+============================================================

@@ -1,0 +1,112 @@
+ Network parcanvox_default Creating 
+ Network parcanvox_default Created 
+ Container parcanvox-voxtral_small-run-e64ac778a573 Creating 
+ Container parcanvox-voxtral_small-run-e64ac778a573 Created 
+2026-07-28 03:57:16,147 [INFO] Dataset fingerprint: a3e83cf2aa8a84b85142
+2026-07-28 03:57:16,147 [INFO] Segments: 17 | Total audio: 5634.2s
+2026-07-28 03:57:16,148 [INFO] [1/17] seg_0001 — Consultation 1.m4a
+2026-07-28 03:57:27,080 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 03:57:27,088 [INFO]   WER=0.029 | CER=0.010 | RTF=0.103 | latency=10.9s
+2026-07-28 03:57:27,088 [INFO]   REF: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 03:57:27,088 [INFO]   HYP: bonjour comment allez-vous depuis la dernière consultation bonjour docteur ça va mais ça a pas trop 
+2026-07-28 03:57:27,088 [INFO] [2/17] seg_0002 — Recording_1001.m4a
+2026-07-28 03:58:21,174 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 03:58:21,195 [INFO]   WER=0.061 | CER=0.035 | RTF=0.103 | latency=54.1s
+2026-07-28 03:58:21,195 [INFO]   REF: bonjour monsieur dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon adresse habitude p
+2026-07-28 03:58:21,195 [INFO]   HYP: bonjour monsieur dubois ça va bien bonjour docteur oui ça va ça va ai apporté mon adresse est habitu
+2026-07-28 03:58:21,196 [INFO] [3/17] seg_0003 — Recording_1006.m4a
+2026-07-28 03:59:22,079 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 03:59:22,101 [INFO]   WER=0.097 | CER=0.052 | RTF=0.111 | latency=60.9s
+2026-07-28 03:59:22,101 [INFO]   REF: bonjour m laurent alors vous venez me voir sur les conseils de votre médecin généraliste est ça oui 
+2026-07-28 03:59:22,101 [INFO]   HYP: bonjour monsieur laurent alors vous venez me voir sur les conseils de votre médecin généraliste est 
+2026-07-28 03:59:22,101 [INFO] [4/17] seg_0004 — Recording_1007.m4a
+2026-07-28 04:00:10,360 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:00:10,378 [INFO]   WER=0.069 | CER=0.050 | RTF=0.095 | latency=48.3s
+2026-07-28 04:00:10,378 [INFO]   REF: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 04:00:10,378 [INFO]   HYP: bonjour madame lefebvre alors venez vous asseoir doucement je vois que vous préférez rester assise o
+2026-07-28 04:00:10,378 [INFO] [5/17] seg_0005 — Recording_3006.m4a
+2026-07-28 04:00:52,993 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:00:53,012 [INFO]   WER=0.095 | CER=0.077 | RTF=0.080 | latency=42.6s
+2026-07-28 04:00:53,012 [INFO]   REF: madame ben saïd oui bonjour bonjour madame allez-y je vous en prie installez-vous très bien merci al
+2026-07-28 04:00:53,012 [INFO]   HYP: madame ben saïd oui bonjour bonjour madame allez-y je vous en prie est à vous bonjour docteur très b
+2026-07-28 04:00:53,013 [INFO] [6/17] seg_0006 — perso_9.m4a
+2026-07-28 04:01:04,750 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:01:04,756 [INFO]   WER=0.229 | CER=0.129 | RTF=0.050 | latency=11.7s
+2026-07-28 04:01:04,756 [INFO]   REF: chers confrères je vous en consultation monsieur pour hypoacousie droite point à la ligne bien pris 
+2026-07-28 04:01:04,756 [INFO]   HYP: chers confrères je vous en consultation monsieur pour hypoacousie droite ai bien pris connaissance d
+2026-07-28 04:01:04,756 [INFO] [7/17] seg_0007 — audio_orl1.m4a
+2026-07-28 04:01:12,597 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:01:12,601 [INFO]   WER=0.162 | CER=0.046 | RTF=0.015 | latency=7.8s
+2026-07-28 04:01:12,601 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=4mg hyp=500mg (ratio=125.0x)
+2026-07-28 04:01:12,601 [INFO]   REF: cher confrère ai vu ce jour mlle dupont marie pour 1 problématique de vertiges évoluant depuis envir
+2026-07-28 04:01:12,601 [INFO]   HYP: chers confrères ai vu ce jour madame dupont-marie pour 1 problématique de vertige évoluant depuis en
+2026-07-28 04:01:12,601 [INFO] [8/17] seg_0008 — audio_orl2.m4a
+2026-07-28 04:01:27,250 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:01:27,255 [INFO]   WER=0.106 | CER=0.030 | RTF=0.027 | latency=14.6s
+2026-07-28 04:01:27,255 [INFO]   REF: bilan 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédents 1 otospong
+2026-07-28 04:01:27,255 [INFO]   HYP: 1 lésion suspecte du bord libre de hémilangue droite le patient a comme antécédent 1 otospongieuse d
+2026-07-28 04:01:27,256 [INFO] [9/17] seg_0009 — perso_4.m4a
+2026-07-28 04:01:33,999 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:01:34,002 [INFO]   WER=0.338 | CER=0.182 | RTF=0.078 | latency=6.7s
+2026-07-28 04:01:34,002 [INFO]   REF: chers confrère je vois en consultation le jeune à 8 mois de son amygdalectomie partielle adénoïdecto
+2026-07-28 04:01:34,002 [INFO]   HYP: chers confrères je vois en consultation le jeune à 8 mois de son amydaectomie partielle adénodectomi
+2026-07-28 04:01:34,002 [INFO] [10/17] seg_0010 — Recording_1019.m4a
+2026-07-28 04:06:34,151 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 504 Gateway Timeout"
+2026-07-28 04:06:34,152 [INFO] Retrying request to /audio/transcriptions in 0.385771 seconds
+2026-07-28 04:07:16,735 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:07:16,753 [INFO]   WER=1.942 | CER=1.709 | RTF=0.568 | latency=342.7s
+2026-07-28 04:07:16,753 [INFO]   REF: bonjour madame dupont vous avez 1 problème de voix je peux plus parler normalement vous parlez très 
+2026-07-28 04:07:16,753 [INFO]   HYP: bonjour madame dupont alors vous avez 1 problème de voix est ça oui bonjour docteur est ça je ne peu
+2026-07-28 04:07:16,753 [INFO] [11/17] seg_0011 — Recording_3005.m4a
+2026-07-28 04:07:49,728 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:07:49,743 [INFO]   WER=0.080 | CER=0.042 | RTF=0.076 | latency=33.0s
+2026-07-28 04:07:49,743 [INFO]   REF: bonjour madame riboud venez je vous en prie entrez venez vous asseoir merci docteur honnêtement ai p
+2026-07-28 04:07:49,743 [INFO]   HYP: bonjour madame riboud venez je vous en prie entrez venez vous asseoir merci docteur honnêtement ai p
+2026-07-28 04:07:49,743 [INFO] [12/17] seg_0012 — perso_6.m4a
+2026-07-28 04:08:01,228 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:08:01,233 [INFO]   WER=0.281 | CER=0.147 | RTF=0.074 | latency=11.5s
+2026-07-28 04:08:01,233 [INFO]   REF: chers confrère je vois en consultation la jeune pour la laryngite à répétition et troubles respirato
+2026-07-28 04:08:01,233 [INFO]   HYP: chers confrères je vous consulte la jeune pour laryngite à répétition et troubles respiratoires suit
+2026-07-28 04:08:01,233 [INFO] [13/17] seg_0014 — Recording_4001.m4a
+2026-07-28 04:08:13,297 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:08:13,302 [INFO]   WER=0.207 | CER=0.094 | RTF=0.088 | latency=12.1s
+2026-07-28 04:08:13,302 [INFO]   REF: je vois en consultation mes sujets ai de 64 ans resté par son médecin traitant pour optimisation du 
+2026-07-28 04:08:13,302 [INFO]   HYP: je vois en consultation mes sujets ai 64 ans adressé par son médecin traitant pour optimisation du t
+2026-07-28 04:08:13,302 [INFO] [14/17] seg_0015 — Recording_4002.m4a
+2026-07-28 04:08:23,863 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:08:23,868 [INFO]   WER=0.287 | CER=0.206 | RTF=0.083 | latency=10.6s
+2026-07-28 04:08:23,868 [INFO]   REF: madame durand ai de 52 ans opérée ce jour pour polypose nasocinusine bilatérale récidivante dans le 
+2026-07-28 04:08:23,868 [INFO]   HYP: madame durand ai 52 ans opérée ce jour pour polypose nasosinusine bilatérale récidivante dans le cad
+2026-07-28 04:08:23,868 [INFO] [15/17] seg_0016 — Recording_4003.m4a
+2026-07-28 04:08:39,204 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:08:39,210 [INFO]   WER=0.153 | CER=0.052 | RTF=0.083 | latency=15.3s
+2026-07-28 04:08:39,210 [WARNING]   ⚠️  DOSAGE_MISSING: ref=68ui not found in hypothesis
+2026-07-28 04:08:39,210 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=80mg hyp=40mg (ratio=0.5x)
+2026-07-28 04:08:39,211 [INFO]   REF: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 04:08:39,211 [INFO]   HYP: je vois en consultation madame duville âgée de 57 ans adressée pour prise en charge 1 polyarthrite r
+2026-07-28 04:08:39,211 [INFO] [16/17] seg_0017 — Recording_4005.m4a
+2026-07-28 04:09:00,007 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:09:00,016 [INFO]   WER=0.175 | CER=0.071 | RTF=0.085 | latency=20.8s
+2026-07-28 04:09:00,016 [WARNING]   ⚠️  DOSAGE_MISMATCH: ref=5mg hyp=50mg (ratio=10.0x)
+2026-07-28 04:09:00,016 [INFO]   REF: bonjour en consultation madame petitjean ai 38 ans adressé par son médecin traitant pour évaluation 
+2026-07-28 04:09:00,016 [INFO]   HYP: bonjour en consultation madame petitjean ai 38 ans adressée par son médecin traitant pour évaluation
+2026-07-28 04:09:00,016 [INFO] [17/17] seg_0018 — perso_14.m4a
+2026-07-28 04:09:07,247 [INFO] HTTP Request: POST https://api.scaleway.ai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-07-28 04:09:07,250 [INFO]   WER=0.210 | CER=0.112 | RTF=0.056 | latency=7.2s
+2026-07-28 04:09:07,250 [INFO]   REF: cher confrère je rencontre monsieur pour 1 dysphagie haute ai bien noté son antécédents de cancer co
+2026-07-28 04:09:07,250 [INFO]   HYP: chers confrères je rencontre monsieur pour 1 dysphagie haute a la ligne il a bien noté son antécéden
+
+============================================================
+RESULTS — Voxtral Small 24B / whole audio
+============================================================
+  Segments:        17
+2026-07-28 04:09:07,257 [INFO] 
+Results saved → results/results_voxtral_small.csv
+  Mean WER:        0.266
+  Mean CER:        0.179
+  Med entity acc:  0.856
+  Mean RTF:        0.104  ✓ faster than realtime
+  Mean latency:    41.8s
+  Dataset:         a3e83cf2aa8a84b85142
+  Critical errors: 3
+============================================================

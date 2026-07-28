@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 
 # Import normalizer from same directory
 sys.path.insert(0, str(Path(__file__).parent))
-from normalizer import MedicalNormalizer
+from normalizer import MedicalNormalizer, NORMALIZER_VERSION
 
 
 def load_worksheet(tsv_path: Path) -> list[dict]:
@@ -41,6 +41,23 @@ def load_worksheet(tsv_path: Path) -> list[dict]:
         for row in reader:
             rows.append(dict(row))
     return rows
+
+
+def load_file_hashes(progress_path: Path) -> dict:
+    """Map segment_id -> file_hash from _progress.json.
+
+    The correction_worksheet.tsv doesn't carry file_hash, so without this
+    every row's file_hash silently defaults to "" and the dataset
+    fingerprint can't detect an audio file being swapped without the
+    transcript text changing.
+    """
+    if not progress_path.exists():
+        log.warning(f"No progress file found at {progress_path} — "
+                    "file_hash will be empty for all segments.")
+        return {}
+    with open(progress_path, encoding="utf-8") as f:
+        progress = json.load(f)
+    return {sid: rec.get("file_hash", "") for sid, rec in progress.items()}
 
 
 def validate_rows(rows: list[dict]) -> list[str]:
@@ -78,13 +95,17 @@ def compute_fingerprint(records: list[dict]) -> str:
     return h.hexdigest()[:20]
 
 
-def run(worksheet_path: Path, output_dir: Path):
+def run(worksheet_path: Path, output_dir: Path, progress_path: Path):
     output_dir.mkdir(parents=True, exist_ok=True)
     frozen_path = output_dir / "test_set_frozen.json"
 
     log.info(f"Loading worksheet: {worksheet_path}")
     rows = load_worksheet(worksheet_path)
     log.info(f"Loaded {len(rows)} rows.")
+
+    file_hashes = load_file_hashes(progress_path)
+    if file_hashes:
+        log.info(f"Loaded {len(file_hashes)} file_hash values from {progress_path}")
 
     # Validate
     errors = validate_rows(rows)
@@ -100,19 +121,26 @@ def run(worksheet_path: Path, output_dir: Path):
     norm = MedicalNormalizer()
     records = []
     for row in rows:
+        seg_id = row["segment_id"].strip()
         gt_raw = row["ground_truth"].strip()
         gt_norm = norm.normalize(gt_raw)
+        file_hash = row.get("file_hash", "").strip() or file_hashes.get(seg_id, "")
         records.append({
-            "segment_id":             row["segment_id"].strip(),
+            "segment_id":             seg_id,
             "audio_file":             row["audio_file"].strip(),
             "duration_s":             float(row.get("duration_s") or -1),
-            "file_hash":              row.get("file_hash", "").strip(),
+            "file_hash":              file_hash,
             "ground_truth_raw":       gt_raw,
             "ground_truth_normalized": gt_norm,
             "speaker_id":             row.get("speaker_id", "").strip(),
             "audio_quality":          (row.get("audio_quality") or "").strip(),
             "notes":                  row.get("notes", "").strip(),
         })
+
+    missing_hash = [r["segment_id"] for r in records if not r["file_hash"]]
+    if missing_hash:
+        log.warning(f"{len(missing_hash)}/{len(records)} segments have no file_hash "
+                    f"(fingerprint won't detect audio swaps for these): {missing_hash}")
 
     # Compute dataset fingerprint
     fingerprint = compute_fingerprint(records)
@@ -122,7 +150,7 @@ def run(worksheet_path: Path, output_dir: Path):
         "dataset_version":    "1.0",
         "frozen_at":          datetime.now(timezone.utc).isoformat(),
         "dataset_fingerprint": fingerprint,
-        "normalizer_version": "medical_fr_v1",
+        "normalizer_version": NORMALIZER_VERSION,
         "language":           "fr",
         "domain":             "medical",
         "n_segments":         len(records),
@@ -174,5 +202,11 @@ if __name__ == "__main__":
         "--output_dir", type=Path, default=Path("./dataset"),
         help="Where to write test_set_frozen.json (default: ./dataset)"
     )
+    parser.add_argument(
+        "--progress", type=Path, default=None,
+        help="Path to _progress.json, used to backfill file_hash "
+             "(default: _progress.json next to the worksheet)"
+    )
     args = parser.parse_args()
-    run(args.worksheet, args.output_dir)
+    progress_path = args.progress or (args.worksheet.parent / "_progress.json")
+    run(args.worksheet, args.output_dir, progress_path)

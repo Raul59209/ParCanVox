@@ -278,7 +278,7 @@ def llm_correct(transcript: str, retries: int = 3) -> str:
     for attempt in range(retries):
         try:
             response = client.chat.completions.create(
-                model="mistral-small-3.2-24b-instruct-2506",
+                model="qwen3-235b-a22b-instruct-2507",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=2000,
@@ -413,7 +413,11 @@ def process_csv(csv_path: Path) -> Path:
     log.info(f"  WER: {mean_wer_orig:.3f} → {mean_wer_corr:.3f} ({mean_wer_corr - mean_wer_orig:+.3f})")
     log.info(f"  CER: {mean_cer_orig:.3f} → {mean_cer_corr:.3f} ({mean_cer_corr - mean_cer_orig:+.3f})")
 
-    return out_path
+    # Tag which source file/model this came from, so the combined CSV stays
+    # traceable back to its origin once everything is concatenated together.
+    df.insert(0, "source_file", csv_path.name)
+
+    return out_path, df
 
 
 if __name__ == "__main__":
@@ -428,15 +432,36 @@ if __name__ == "__main__":
 
     csv_files = [Path(p) for p in sys.argv[1:]]
     outputs   = []
+    all_dfs   = []
 
     for csv_path in csv_files:
         if not csv_path.exists():
             log.error(f"File not found: {csv_path}")
             continue
-        out = process_csv(csv_path)
-        if out:
-            outputs.append(out)
+        result = process_csv(csv_path)
+        if result:
+            out_path, df = result
+            outputs.append(out_path)
+            all_dfs.append(df)
 
     print(f"\nDone. {len(outputs)} file(s) corrected:")
     for o in outputs:
         print(f"  {o}")
+
+    if all_dfs:
+        combined = pd.concat(all_dfs, ignore_index=True, sort=False)
+        combined_path = csv_files[0].parent / "results_all_corrected.csv"
+        combined.to_csv(combined_path, index=False, encoding="utf-8")
+        print(f"\nCombined -> {combined_path}  ({len(combined)} total segments across {len(all_dfs)} file(s))")
+
+        # Per-model mean WER/CER, before vs after correction, as a quick
+        # sanity check without having to open the CSV.
+        if {"wer_original", "wer_llm_corrected"}.issubset(combined.columns):
+            summary = (
+                combined.groupby("source_file")[["wer_original", "wer_llm_corrected",
+                                                   "cer_original", "cer_llm_corrected"]]
+                .mean()
+                .round(3)
+            )
+            print("\nPer-model summary (mean WER/CER, original vs LLM-corrected):")
+            print(summary.to_string())
