@@ -159,16 +159,16 @@ def build_review_prompt(transcript: str) -> str:
     review_schema = {
         "corrections": [
             {
-                "original":  "string — le mot ou groupe de mots EXACTEMENT tel qu'il apparait dans la transcription",
-                "corrige":   "string — la correction proposee",
-                "type":      "string — medicament | dosage | anatomie | autre",
+                "original":  "string — 1 a 4 mots MAXIMUM, EXACTEMENT tels qu'ils apparaissent dans la transcription",
+                "corrige":   "string — la correction, 1 a 4 mots MAXIMUM, meme longueur approximative que 'original'",
+                "type":      "string — medicament | dosage | anatomie",
                 "confiance": "string — haute (certain) | moyenne (probable) | faible (possible)",
             }
         ],
         "alertes": [
             {
-                "texte": "string — le passage concerne",
-                "raison":"string — pourquoi ce passage merite attention du medecin",
+                "texte":  "string — le passage concerne (medicament + dosage cites)",
+                "raison": "string — pourquoi ce dosage/passage merite verification par le medecin",
             }
         ],
     }
@@ -178,19 +178,39 @@ def build_review_prompt(transcript: str) -> str:
 TRANSCRIPTION À VÉRIFIER ET CORRIGER :
 {transcript}
 {drug_list_str}
-INSTRUCTIONS :
-- Vérifie et corrige les noms de médicaments mal transcrits. Compare avec le référentiel fourni.
-- Vérifie les dosages : sont-ils cohérents et plausibles ?
-- Vérifie les termes anatomiques et médicaux.
-- Corrige les erreurs phonétiques (ex: "pérendopril" -> "périndopril", "turbastatine" -> "atorvastatine").
+CE QUE TU AS LE DROIT DE CORRIGER (uniquement ces 3 catégories) :
+1. medicament — un nom de médicament mal transcrit phonétiquement (ex: "pérendopril" -> "périndopril").
+2. dosage — un chiffre de dosage (mg/g/UI/ml) qui semble incohérent avec le médicament associé.
+3. anatomie — un terme anatomique ou médical technique mal transcrit.
+
+RÈGLES STRICTES :
+- "original" et "corrige" doivent chacun faire 1 A 4 MOTS MAXIMUM. Jamais une phrase entière,
+  jamais un paragraphe. Si le passage à corriger dépasse 4 mots, c'est que ce n'est PAS une
+  correction valide pour cet outil — ignore-le ou mets-le dans "alertes" à la place.
+- N'INVENTE JAMAIS de contenu clinique nouveau (résultats de labo, examens, gestes médicaux) qui
+  n'apparaissait pas déjà dans la transcription originale, même pour "réparer" une phrase qui te
+  semble incomplète ou mal formée. Si une phrase est confuse mais qu'aucun terme précis ne saute
+  aux yeux comme erroné, laisse-la telle quelle et n'y touche pas.
+- N'essaie JAMAIS de corriger des marqueurs de dictée orale ("point", "virgule", "à la ligne",
+  "point à la ligne") — ce sont des instructions de ponctuation dictées par le médecin, pas des
+  erreurs, même si le mot suivant semble bizarre à cause d'elles.
+- Ne corrige PAS le style, la grammaire, l'ordre des mots, ou la reformulation — seulement les
+  3 catégories ci-dessus, terme par terme.
+- DOSAGES — c'est la catégorie la plus importante cliniquement, sois systématique : pour CHAQUE
+  dosage numérique (mg, g, UI, ml) associé à un médicament nommé dans le texte, demande-toi s'il
+  est cliniquement plausible pour ce médicament à cette indication. Si un dosage te semble
+  franchement anormal (trop élevé, trop faible, ou incohérent avec la posologie standard de ce
+  médicament) mais que tu n'es pas sûr de la valeur correcte à mettre à la place, NE DEVINE PAS
+  un chiffre — mets ce passage dans "alertes" avec la raison, pour qu'un médecin vérifie. Ne
+  mets un dosage dans "corrections" que si tu es "haute" confiance sur la valeur exacte de
+  remplacement.
 - Pour chaque correction, "original" doit être le texte EXACT tel qu'il apparait dans la transcription.
-- "corrige" doit être UNIQUEMENT le terme corrigé, en français, tel qu'il doit apparaître dans la
-  transcription — jamais une phrase, jamais une explication, jamais une traduction en anglais,
-  jamais plusieurs options séparées par "ou". Exemple correct : "corrige": "périndopril".
+- "corrige" doit être UNIQUEMENT le terme corrigé, en français — jamais une explication,
+  jamais une traduction en anglais, jamais plusieurs options séparées par "ou".
+  Exemple correct : "corrige": "périndopril".
   Exemple INTERDIT : "corrige": "périndopril ou peut-être un autre IEC, à vérifier".
 - Si tu n'es pas sûr à au moins "moyenne" confiance d'UN SEUL terme précis, ne mets PAS cette
   entrée dans "corrections" — mets plutôt ton incertitude dans "alertes".
-- Ne liste QUE les erreurs médicales réelles — pas de corrections de style ou de grammaire.
 - Si aucune erreur médicale n'est détectée, retourne corrections=[].
 - Réponds UNIQUEMENT avec le JSON valide, sans texte avant ni après, sans markdown.
 
@@ -208,16 +228,29 @@ _HEDGE_MARKERS = (
 )
 
 
+MAX_CORRECTION_WORDS = 5  # hard cap — a real term/dosage fix is never longer than this
+
+
 def _looks_like_explanation(original: str, corrected: str) -> bool:
-    """Reject corrections that are commentary/alternatives rather than a clean term."""
+    """Reject corrections that are commentary/alternatives, or full-sentence
+    rewrites smuggled in as a single 'correction', rather than a clean term."""
     low = corrected.lower()
     if any(marker in low for marker in _HEDGE_MARKERS):
         return True
+
+    orig_words = len(original.split())
+    corr_words = len(corrected.split())
+
+    # Absolute cap: even if original/corrige are similar length to each
+    # other, if BOTH are long, the model rewrote a whole sentence, not a
+    # term — the ratio check below wouldn't catch that on its own.
+    if orig_words > MAX_CORRECTION_WORDS or corr_words > MAX_CORRECTION_WORDS:
+        return True
+
     # A real term correction stays roughly the same length as the original.
     # If the model tripled the word count, it's explaining, not correcting.
-    orig_words = max(len(original.split()), 1)
-    corr_words = len(corrected.split())
-    if corr_words > orig_words * 3 + 2:
+    orig_words_safe = max(orig_words, 1)
+    if corr_words > orig_words_safe * 3 + 2:
         return True
     return False
 
@@ -247,8 +280,10 @@ def apply_surgical_corrections(transcript: str, corrections: list[dict]) -> str:
         if not original or not corrected or original == corrected:
             continue
         if _looks_like_explanation(original, corrected):
-            log.info(f"    ✗ rejected (looks like commentary, not a term): "
-                      f"'{original}' → '{corrected}'")
+            reason = ("too long — full-sentence rewrite, not a term"
+                       if max(len(original.split()), len(corrected.split())) > MAX_CORRECTION_WORDS
+                       else "looks like commentary/hedge, not a clean term")
+            log.info(f"    ✗ rejected ({reason}): '{original[:60]}' → '{corrected[:60]}'")
             continue
 
         # Case-insensitive replacement, preserve surrounding context

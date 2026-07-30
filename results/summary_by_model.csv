@@ -1,0 +1,9 @@
+model,wer_mean,wer_median,cer_mean,cer_median,med_entity_acc_mean,med_entity_acc_median,med_entity_hits_mean,med_entity_hits_median,med_entity_total_mean,med_entity_total_median,latency_s_mean,latency_s_median,rtf_mean,rtf_median,cost_usd_mean,cost_usd_median,cost_per_hour_audio_mean,cost_per_hour_audio_median,n_critical_errors,n_segments
+faster-whisper-deepdml/faster-whisper-large-v3-turbo-ct2-int8-chunked,0.296,0.182,0.1957,0.0974,0.8926,1.0,2.7059,2.0,3.2353,2.0,13.4224,9.916,0.0378,0.047,0.0,0.0,0.0,0.0,2,17
+faster-whisper-deepdml/faster-whisper-large-v3-turbo-ct2-int8-whole,0.2941,0.1672,0.1908,0.0831,0.8779,1.0,2.6471,2.0,3.2353,2.0,5.6136,3.419,0.0183,0.02,0.0,0.0,0.0,0.0,2,17
+faster-whisper-large-v3,0.2782,0.1542,0.1919,0.0793,0.9147,1.0,2.7059,2.0,3.2353,2.0,15.7395,10.943,0.0499,0.053,0.0,0.0,0.0,0.0,2,17
+faster-whisper-large-v3-chunked,0.2734,0.1476,0.1845,0.089,0.8706,1.0,2.5882,2.0,3.2353,2.0,20.9029,15.02,0.0622,0.068,0.0,0.0,0.0,0.0,2,17
+faster-whisper-large-v3-int8-chunked,0.283,0.1578,0.1904,0.081,0.8485,1.0,2.5294,2.0,3.2353,2.0,21.3441,15.248,0.0634,0.069,0.0,0.0,0.0,0.0,3,17
+mistral/voxtral-small-24b-2507,0.3086,0.166,0.2288,0.0711,0.8292,1.0,2.5,2.0,3.2353,2.0,34.1831,13.75,0.0893,0.083,0.0,0.0,0.0,0.0,6,34
+whisperx-large-v3,0.2471,0.1254,0.1742,0.0566,0.8608,1.0,2.5294,2.0,3.2353,2.0,4.4742,2.905,0.015,0.015,0.0,0.0,0.0,0.0,3,17
+whisperx-large-v3-chunked,0.2473,0.1436,0.1686,0.0686,0.8608,1.0,2.5294,2.0,3.2353,2.0,11.9672,8.956,0.0334,0.042,0.0,0.0,0.0,0.0,4,17

@@ -26,6 +26,28 @@ RESULTS_DIR    = Path("results")
 RESULTS_PATH   = RESULTS_DIR / "results_whisperx.csv"
 RESULTS_DIR.mkdir(exist_ok=True)
 
+# General French medical-vocabulary hint, passed as Whisper's native
+# initial_prompt via asr_options. This is domain vocabulary (common drug
+# names/classes, anatomical terms, clinical abbreviations), NOT anything
+# specific to this test set's actual transcripts — it biases decoding
+# toward correct spellings the model may otherwise phonetically garble,
+# without leaking ground-truth answers. Same prompt should be used (or
+# withheld) consistently across every model being compared, so this stays
+# a fair, reproducible setting rather than a whisperx-only advantage.
+MEDICAL_INITIAL_PROMPT = (
+    "Transcription d'une consultation médicale en français. "
+    "Médicaments courants : périndopril, indapamide, metformine, atorvastatine, "
+    "clopidogrel, méthotrexate, prednisolone, amoxicilline, oflocet, nasonex, "
+    "doliprane, ibuprofène, oméprazole, lévothyroxine, amlodipine. "
+    "Termes médicaux : otoscopie, adénoïdectomie, amygdalectomie, "
+    "aérateurs trans-tympaniques, tympanométrie, audiogramme, presbyacousie, "
+    "polyarthrite rhumatoïde, anti-CCP, DAS28-CRP, biothérapie anti-TNF, "
+    "paralysie faciale périphérique, vertige positionnel paroxystique bénin, "
+    "manœuvre de Semont, otite externe, otite séromuqueuse, dysphonie, "
+    "laryngite, reflux gastro-œsophagien, nodules vocaux. "
+    "Unités : mg, g, UI, ml, mg/L."
+)
+
 with open(DATASET_PATH, encoding="utf-8") as f:
     dataset = json.load(f)
 
@@ -36,7 +58,10 @@ log.info(f"Segments: {len(segments)} | Total audio: {dataset['total_duration_s']
 
 log.info(f"Loading WhisperX {MODEL_SIZE}...")
 try:
-    model = whisperx.load_model(MODEL_SIZE, device="cuda", compute_type="float16", language=LANGUAGE)
+    model = whisperx.load_model(
+        MODEL_SIZE, device="cuda", compute_type="float16", language=LANGUAGE,
+        asr_options={"initial_prompt": MEDICAL_INITIAL_PROMPT},
+    )
     # Reduced from 8 to 4: seg_0002 (Recording_1001.m4a) consistently OOMs at
     # batch_size=8 even immediately after a full cache clear + synchronize,
     # meaning peak VRAM usage at batch_size=8 is genuinely too close to the
@@ -47,7 +72,10 @@ try:
     log.info("Loaded on cuda/float16 ✓")
 except Exception as e:
     log.warning(f"GPU failed: {e} — falling back to CPU")
-    model = whisperx.load_model(MODEL_SIZE, device="cpu", compute_type="int8", language=LANGUAGE)
+    model = whisperx.load_model(
+        MODEL_SIZE, device="cpu", compute_type="int8", language=LANGUAGE,
+        asr_options={"initial_prompt": MEDICAL_INITIAL_PROMPT},
+    )
     DEVICE, COMPUTE_TYPE, BATCH_SIZE = "cpu", "int8", 1
     log.info("Loaded on cpu/int8 ✓")
 

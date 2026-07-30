@@ -33,13 +33,17 @@ RESULTS_DIR = Path("results")
 # All possible result files — missing ones are skipped with a warning
 RESULT_FILES = {
     "faster-whisper":    RESULTS_DIR / "results_faster_whisper.csv",
+    "faster-whisper-chunked": RESULTS_DIR / "results_faster_whisper_chunked.csv",
     "whisper-large-v3":  RESULTS_DIR / "results_whisper_large_v3.csv",
     "whisperx":             RESULTS_DIR / "results_whisperx.csv",
     "whisperx-chunked":     RESULTS_DIR / "results_whisperx_chunked.csv",
+    #"whisper_large_v3_scaleway": RESULTS_DIR / "results_whisper_large_v3_scaleway.csv",
+    #"whisper_large_v3_scaleway_chunked": RESULTS_DIR / "results_whisper_large_v3_scaleway_chunked.csv",
     # "nvidia-conformer":  RESULTS_DIR / "results_nvidia_conformer.csv",
     # "voxtral":           RESULTS_DIR / "results_voxtral.csv",
-    "faster-whisper-chunked": RESULTS_DIR / "results_faster_whisper_chunked.csv",
     "faster-whisper-int8":  RESULTS_DIR / "results_faster_whisper_int8.csv",
+    "faster-whisper-int8-chunked": RESULTS_DIR / "results_faster_whisper_int8_chunked.csv",
+    "faster-whisper-turbo": RESULTS_DIR / "results_faster_whisper_turbo_int8.csv",
     "faster-whisper-turbo": RESULTS_DIR / "results_faster_whisper_turbo_int8_chunked.csv",
     # "voxtral-mini": RESULTS_DIR / "results_voxtral_mini.csv",
     "voxtral-small":         RESULTS_DIR / "results_voxtral_small.csv",

@@ -49,6 +49,24 @@ SILENCE_THRESH_DB   = -40
 SILENCE_MIN_LEN_MS  = 700
 SILENCE_KEEP_MS     = 300
 
+# See notebook_whisperx.py for rationale — general French medical vocabulary
+# hint via Whisper's native initial_prompt, not test-set-specific answers.
+# Keep this identical to the un-chunked notebook's prompt so results stay
+# comparable between the two whisperx variants.
+MEDICAL_INITIAL_PROMPT = (
+    "Transcription d'une consultation médicale en français. "
+    "Médicaments courants : périndopril, indapamide, metformine, atorvastatine, "
+    "clopidogrel, méthotrexate, prednisolone, amoxicilline, oflocet, nasonex, "
+    "doliprane, ibuprofène, oméprazole, lévothyroxine, amlodipine. "
+    "Termes médicaux : otoscopie, adénoïdectomie, amygdalectomie, "
+    "aérateurs trans-tympaniques, tympanométrie, audiogramme, presbyacousie, "
+    "polyarthrite rhumatoïde, anti-CCP, DAS28-CRP, biothérapie anti-TNF, "
+    "paralysie faciale périphérique, vertige positionnel paroxystique bénin, "
+    "manœuvre de Semont, otite externe, otite séromuqueuse, dysphonie, "
+    "laryngite, reflux gastro-œsophagien, nodules vocaux. "
+    "Unités : mg, g, UI, ml, mg/L."
+)
+
 with open(DATASET_PATH, encoding="utf-8") as f:
     dataset = json.load(f)
 
@@ -59,12 +77,18 @@ log.info(f"Segments: {len(segments)} | Total audio: {dataset['total_duration_s']
 
 log.info(f"Loading WhisperX {MODEL_SIZE}...")
 try:
-    model = whisperx.load_model(MODEL_SIZE, device="cuda", compute_type="float16", language=LANGUAGE)
+    model = whisperx.load_model(
+        MODEL_SIZE, device="cuda", compute_type="float16", language=LANGUAGE,
+        asr_options={"initial_prompt": MEDICAL_INITIAL_PROMPT},
+    )
     DEVICE, COMPUTE_TYPE, BATCH_SIZE = "cuda", "float16", 8
     log.info("Loaded on cuda/float16 ✓")
 except Exception as e:
     log.warning(f"GPU failed: {e} — falling back to CPU")
-    model = whisperx.load_model(MODEL_SIZE, device="cpu", compute_type="int8", language=LANGUAGE)
+    model = whisperx.load_model(
+        MODEL_SIZE, device="cpu", compute_type="int8", language=LANGUAGE,
+        asr_options={"initial_prompt": MEDICAL_INITIAL_PROMPT},
+    )
     DEVICE, COMPUTE_TYPE, BATCH_SIZE = "cpu", "int8", 1
     log.info("Loaded on cpu/int8 ✓")
 
