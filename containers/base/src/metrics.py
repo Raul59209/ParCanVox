@@ -90,6 +90,13 @@ _ROUTE_TOKENS = {
     "sublingual", "inhalation", "perfusion",
 }
 
+# How many characters back to look, from the start of a dosage match, when
+# searching for the drug name it belongs to. Tuned to span "drug NAME 75 mg"
+# style constructions (including a brand name + a few connecting words)
+# without reaching back far enough to accidentally grab an unrelated
+# medication mentioned earlier in a long sentence.
+_DRUG_ASSOC_WINDOW = 60
+
 # Common French medical drug stems (partial list — extend for your domain)
 _DRUG_STEMS = [
     "amoxicilline", "paracétamol", "paracetamol", "ibuprofène", "metformine", "aspirine",
@@ -143,7 +150,13 @@ _DRUG_RE = re.compile(
 class MedicalEntity:
     type: str        # "dosage" | "drug" | "frequency" | "route" | "number"
     value: str       # normalized string
-    raw: str         # original match
+    raw: str          # original match
+    drug: str = ""    # for type=="dosage": nearest associated drug name (lowercase),
+                       # "" if none found within _DRUG_ASSOC_WINDOW. Not part of
+                       # equality/hash — two dosage entities with the same value
+                       # still count as the "same" entity for entity-accuracy
+                       # purposes regardless of which drug they were tied to;
+                       # `drug` is only used for smarter critical-error pairing.
 
     def __eq__(self, other):
         return self.type == other.type and self.value == other.value
@@ -159,22 +172,40 @@ def extract_medical_entities(text: str) -> list[MedicalEntity]:
     """Extract all medical entities from normalized text."""
     entities = []
 
+    # Find all drug name matches first (position + name), so each dosage can
+    # look up the nearest PRECEDING drug name to associate with. This is what
+    # lets find_critical_errors() compare "périndopril's dose" against
+    # "périndopril's dose" instead of against whatever dosage happens to come
+    # out of a set first.
+    drug_matches = [(m.start(), m.group(0).lower()) for m in _DRUG_RE.finditer(text)]
+
     # Dosages (number + unit) — highest priority
     for m in _DOSAGE_RE.finditer(text):
         number = m.group(1).replace(",", ".")
         unit = m.group(2).lower()
+
+        assoc_drug = ""
+        best_dist = None
+        for pos, name in drug_matches:
+            if pos < m.start():
+                dist = m.start() - pos
+                if dist <= _DRUG_ASSOC_WINDOW and (best_dist is None or dist < best_dist):
+                    best_dist = dist
+                    assoc_drug = name
+
         entities.append(MedicalEntity(
             type="dosage",
             value=f"{number}{unit}",
             raw=m.group(0),
+            drug=assoc_drug,
         ))
 
     # Drug names
-    for m in _DRUG_RE.finditer(text):
+    for pos, name in drug_matches:
         entities.append(MedicalEntity(
             type="drug",
-            value=m.group(0).lower(),
-            raw=m.group(0),
+            value=name,
+            raw=name,
         ))
 
     # Frequencies
@@ -190,50 +221,6 @@ def extract_medical_entities(text: str) -> list[MedicalEntity]:
     return entities
 
 
-def find_critical_errors(
-    ref_entities: list[MedicalEntity],
-    hyp_entities: list[MedicalEntity],
-) -> list[str]:
-    """
-    Find medically critical mismatches — especially dosage errors.
-    A "500mg" vs "5000mg" confusion counts as only 1 WER error
-    but is clinically dangerous. We surface these explicitly.
-    """
-    errors = []
-    ref_dosages = {e for e in ref_entities if e.type == "dosage"}
-    hyp_dosages = {e for e in hyp_entities if e.type == "dosage"}
-
-    # Dosages in ref but wrong/missing in hyp
-    for ref_e in ref_dosages:
-        if ref_e not in hyp_dosages:
-            # Find closest hyp dosage with same unit
-            ref_num, ref_unit = _split_dosage(ref_e.value)
-            candidates = [e for e in hyp_dosages if _split_dosage(e.value)[1] == ref_unit]
-            if candidates:
-                hyp_e = candidates[0]
-                hyp_num, _ = _split_dosage(hyp_e.value)
-                errors.append(
-                    f"DOSAGE_MISMATCH: ref={ref_e.value} hyp={hyp_e.value} "
-                    f"(ratio={hyp_num/ref_num:.1f}x)" if ref_num > 0 else
-                    f"DOSAGE_MISMATCH: ref={ref_e.value} hyp={hyp_e.value}"
-                )
-            else:
-                errors.append(f"DOSAGE_MISSING: ref={ref_e.value} not found in hypothesis")
-
-    # Dosages in hyp but not in ref (hallucinated dosages)
-    for hyp_e in hyp_dosages:
-        if hyp_e not in ref_dosages:
-            ref_units = {_split_dosage(e.value)[1] for e in ref_dosages}
-            hyp_unit = _split_dosage(hyp_e.value)[1]
-            if hyp_unit in ref_units:
-                # Same unit exists in ref → already caught above as mismatch
-                pass
-            else:
-                errors.append(f"DOSAGE_HALLUCINATED: hyp={hyp_e.value} not in reference")
-
-    return errors
-
-
 def _split_dosage(dosage_value: str) -> tuple[float, str]:
     """Split '500mg' → (500.0, 'mg'). Returns (0.0, '') on failure."""
     m = re.match(r'^([\d.]+)([a-z]+)$', dosage_value)
@@ -243,6 +230,105 @@ def _split_dosage(dosage_value: str) -> tuple[float, str]:
         return float(m.group(1)), m.group(2)
     except ValueError:
         return 0.0, m.group(2)
+
+
+def find_critical_errors(
+    ref_entities: list[MedicalEntity],
+    hyp_entities: list[MedicalEntity],
+) -> list[str]:
+    """
+    Find medically critical mismatches — especially dosage errors.
+    A "500mg" vs "5000mg" confusion counts as only 1 WER error
+    but is clinically dangerous. We surface these explicitly.
+
+    Dosages are compared PER-DRUG whenever a drug association is available
+    (see extract_medical_entities), instead of just grabbing an arbitrary
+    same-unit dosage from a set. This stops nonsensical comparisons like
+    "périndopril's 4mg" being flagged against "paracétamol's 500mg" just
+    because both happen to be in "mg" and one came first out of set iteration
+    order. When no drug is known for a given number (e.g. it sits too far
+    from any recognized drug name), we fall back to matching it against the
+    numerically closest same-unit dosage rather than a random one — safer,
+    but still not as reliable as a real drug association, so treat those
+    specifically as lower-confidence if you're triaging critical_errors.
+    """
+    errors = []
+
+    ref_dosages = [e for e in ref_entities if e.type == "dosage"]
+    hyp_dosages = [e for e in hyp_entities if e.type == "dosage"]
+    ref_set = set(ref_dosages)
+    hyp_set = set(hyp_dosages)
+
+    def group_by_drug(entities):
+        groups: dict[str, list] = {}
+        for e in entities:
+            groups.setdefault(e.drug, []).append(e)
+        return groups
+
+    ref_by_drug = group_by_drug(ref_dosages)
+    hyp_by_drug = group_by_drug(hyp_dosages)
+
+    matched_hyp_ids = set()  # id() of hyp entities already used, so one hyp
+                              # dosage can't be "reused" to explain away
+                              # multiple different ref mismatches
+
+    for drug, ref_list in ref_by_drug.items():
+        for ref_e in ref_list:
+            if ref_e in hyp_set:
+                continue  # an exact (value) match exists somewhere in hyp — fine
+
+            ref_num, ref_unit = _split_dosage(ref_e.value)
+            drug_label = f" [{drug}]" if drug else ""
+
+            if drug:
+                # Known drug on the ref side: ONLY compare against hyp dosages
+                # associated with that SAME drug. If hyp has no dosage tied to
+                # this drug at all, that's a MISSING dosage — never silently
+                # substitute a different drug's number.
+                same_drug_candidates = [
+                    e for e in hyp_by_drug.get(drug, [])
+                    if _split_dosage(e.value)[1] == ref_unit and id(e) not in matched_hyp_ids
+                ]
+                candidates = same_drug_candidates
+            else:
+                # No drug could be associated with this ref number (too far
+                # from any recognized drug name). Fall back to the closest
+                # same-unit hyp dosage among ALL unmatched hyp dosages —
+                # better than arbitrary set order, but flagged as such via
+                # the empty drug_label so it's visibly lower-confidence.
+                candidates = [
+                    e for e in hyp_dosages
+                    if _split_dosage(e.value)[1] == ref_unit and id(e) not in matched_hyp_ids
+                ]
+
+            if candidates:
+                hyp_e = min(candidates, key=lambda e: abs(_split_dosage(e.value)[0] - ref_num))
+                matched_hyp_ids.add(id(hyp_e))
+                hyp_num, _ = _split_dosage(hyp_e.value)
+                if ref_num > 0:
+                    errors.append(
+                        f"DOSAGE_MISMATCH{drug_label}: ref={ref_e.value} hyp={hyp_e.value} "
+                        f"(ratio={hyp_num/ref_num:.1f}x)"
+                    )
+                else:
+                    errors.append(f"DOSAGE_MISMATCH{drug_label}: ref={ref_e.value} hyp={hyp_e.value}")
+            else:
+                errors.append(f"DOSAGE_MISSING{drug_label}: ref={ref_e.value} not found in hypothesis")
+
+    # Dosages in hyp but not in ref at all (hallucinated dosages), and not
+    # already consumed as the "corrected value" side of a mismatch above.
+    ref_units = {_split_dosage(e.value)[1] for e in ref_dosages}
+    for hyp_e in hyp_dosages:
+        if id(hyp_e) in matched_hyp_ids:
+            continue
+        if hyp_e in ref_set:
+            continue
+        hyp_unit = _split_dosage(hyp_e.value)[1]
+        if hyp_unit not in ref_units:
+            drug_label = f" [{hyp_e.drug}]" if hyp_e.drug else ""
+            errors.append(f"DOSAGE_HALLUCINATED{drug_label}: hyp={hyp_e.value} not in reference")
+
+    return errors
 
 
 # ---------------------------------------------------------------------------
@@ -357,7 +443,7 @@ class BenchmarkMetrics:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    from Napoleon.containers.base.src.normalizer import MedicalNormalizer
+    from normalizer import MedicalNormalizer
     norm = MedicalNormalizer()
     m    = BenchmarkMetrics()
 
@@ -393,6 +479,15 @@ if __name__ == "__main__":
             "hyp": "insuline sous cutané deux fois par jour",
             "expect_wer": 0.375,
             "expect_critical": 1,
+        },
+        {
+            "name": "Two drugs, same unit — dosages must NOT cross-match",
+            "ref": "périndopril 4 mg le matin et paracétamol 500 mg le soir",
+            "hyp": "périndopril 5 mg le matin et paracétamol 500 mg le soir",
+            "expect_wer": 0.083,
+            "expect_critical": 1,   # only périndopril's dose is wrong;
+                                     # paracétamol's correct 500mg must NOT
+                                     # get dragged into a false mismatch
         },
     ]
 
