@@ -4,7 +4,7 @@ FROM stt-benchmark-base
 # pydub needed for the chunked notebook; ffmpeg backs pydub's audio loading
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg && rm -rf /var/lib/apt/lists/*
 
-RUN pip install whisperx pydub
+RUN pip install whisperx pydub openai
 
 COPY containers/whisperx/notebook_whisperx.py /app/
 COPY containers/whisperx/notebook_whisperx_chunked.py /app/
